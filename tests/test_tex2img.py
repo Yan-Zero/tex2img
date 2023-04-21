@@ -32,9 +32,3 @@ def test_latex2png():
 
     png_data = renderer.compile(TEX, compiler='lualatex')
     assert png_data[:4] == b'\x89PNG'
-    return png_data
-
-
-if __name__ == '__main__':
-    with open('test.png', 'wb') as f:
-        f.write(test_latex2png())

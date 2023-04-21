@@ -1,7 +1,7 @@
 r""" Module to compile LaTeX code to PNG file. 
 
-This module also provides a `Latex2PNG` class that can be used to render LaTeX
-documents as PNG images using the `https://latex.ytotech.com/` API.
+This module provides a `Latex2PNG` class that can be used to render LaTeX
+documents.
 
 Example usage:
 
@@ -44,6 +44,27 @@ class Latex2PNG(LatexCompiler):
     """
 
     def compile(self, latex_code, images: list[tuple[str, str]] | None = None, compiler='lualatex'):
+        """ Compile LaTeX code to PNG file. 
+
+        Parameters
+        ----------
+        latex_code : str
+            LaTeX code to compile.
+        images : list[tuple[str, str]], optional
+            List of images to include in the PDF file, by default None
+        compiler : str, optional
+            LaTeX compiler to use, by default 'lualatex'
+
+        Returns
+        -------
+        list[bytes]
+            List of PNG files.
+
+        Raises
+        ------
+        CompilationError
+            If the compilation failed.
+        """
         png_results = []
         pdf = super().compile(latex_code, images, compiler)
         with BytesIO(pdf) as pdf_file:
@@ -71,6 +92,27 @@ class AsyncLatex2PNG(AsyncLatexCompiler):
     async def acompile(self, latex_code,
                        images: list[tuple[str, str]] | None = None,
                        compiler='lualatex'):
+        """ Compile LaTeX code to PNG file asynchronously.
+
+        Parameters
+        ----------
+        latex_code : str
+            LaTeX code to compile.
+        images : list[tuple[str, str]], optional
+            List of images to include in the PDF file, by default None
+        compiler : str, optional
+            LaTeX compiler to use, by default 'lualatex'
+
+        Returns
+        -------
+        list[bytes]
+            List of PNG files.
+
+        Raises
+        ------
+        CompilationError
+            If the compilation failed.
+        """
         png_results = []
         pdf = await super().acompile(latex_code, images, compiler)
         with BytesIO(pdf) as pdf_file:

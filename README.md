@@ -22,6 +22,12 @@ Other OS, please refer to [pdf2image](https://github.com/Belval/pdf2image#how-to
 
 ## Usage
 
+### Warning
+
+You need to provide 'api_url' when you use `LatexCompiler` or `Latex2PNG`, or set `LATEX_COMPILER_API_URL` in your environment variables.
+
+I recommend to set 'https://latex.ytotech.com/builds/sync' as LATEX_COMPILER_API_URL strongly.
+
 ### Render LaTeX documents as PDF files
 
 To render LaTeX documents as PDF files, you can use the `LatexCompiler` class:
@@ -29,7 +35,7 @@ To render LaTeX documents as PDF files, you can use the `LatexCompiler` class:
 ```python
 from tex2img import LatexCompiler
 
-renderer = LatexCompiler(api_url='https://latex.ytotech.com/builds/sync')
+renderer = LatexCompiler()
 tex = r'''
 \documentclass{article}
 \usepackage{amsmath}
@@ -54,7 +60,7 @@ To render LaTeX documents as PNG images, you can use the `LatexRenderer` class:
 ```python
 from tex2img import Latex2PNG
 
-renderer = Latex2PNG(api_url='https://latex.ytotech.com/builds/sync')
+renderer = Latex2PNG()
 tex = r'''
 \documentclass{article}
 \usepackage{amsmath}

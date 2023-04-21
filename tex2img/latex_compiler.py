@@ -1,7 +1,7 @@
 r""" Module to render LaTeX code to PDF file. 
 
 This module provides a `LatexCompiler` class that can be used to render LaTeX
-documents as PDF files using the `https://latex.ytotech.com/` API.
+documents as PDF files.
 
 Example usage:
 
@@ -45,16 +45,18 @@ class LatexCompiler:
 
     session: requests.Session
 
-    def __init__(self, api_url: str):
+    def __init__(self, api_url: str = ""):
         """ Initialize the class.
 
         Parameters
         ----------
-        api_url : str
-            URL of the LaTeX compiler API.
-            Recommended: https://latex.ytotech.com/builds/sync
+        api_url : str, optional
+            URL of the LaTeX compiler API, by default os.getenv('LATEX_COMPILER_API_URL', '')
+            RECOMMENDED: https://latex.ytotech.com/builds/sync
         """
         self.session = requests.Session()
+        if not api_url:
+            api_url = os.getenv('LATEX_COMPILER_API_URL', '')
         if not api_url:
             raise ValueError("API_URL cannot be empty.")
         self.api_url = api_url
@@ -68,12 +70,10 @@ class LatexCompiler:
         ----------
         latex_code : str
             LaTeX code to compile.
-
         images : list[tuple[str, str]], optional
             List of images to include in the PDF, by default None.
             Format: [(path, content), ...]
                 The content can be a base64 encoded string, file path or URL. 
-
         compiler : str, optional
             Compiler to use, by default 'lualatex'
 
@@ -84,7 +84,7 @@ class LatexCompiler:
 
         Raises
         ------
-        Exception
+        CompilationError
             If compilation fails.
         '''
         main_doc = {
@@ -127,11 +127,6 @@ class LatexCompiler:
 class AsyncLatexCompiler(LatexCompiler):
     """Class to compile LaTeX code to PDF file asynchronously.
 
-    Attributes
-    ----------
-    API_URL : str
-        URL of the LaTeX compiler API.
-
     Methods
     -------
     acompile(latex_code, images=None, compiler='lualatex')
@@ -140,11 +135,12 @@ class AsyncLatexCompiler(LatexCompiler):
 
     session: aiohttp.ClientSession
 
-    def __init__(self, api_url: str):
+    def __init__(self, api_url: str = ""):
         super().__init__(api_url=api_url)
         self.session = aiohttp.ClientSession()
 
     def compile(self, latex_code, images: list[tuple[str, str]] | None = None, compiler='lualatex'):
+        """ DON'T USE THIS METHOD. USE `acompile` INSTEAD. """
         raise NotImplementedError("Use acompile instead.")
 
     async def acompile(self, latex_code,
@@ -156,12 +152,10 @@ class AsyncLatexCompiler(LatexCompiler):
         ----------
         latex_code : str
             LaTeX code to compile.
-
         images : list[tuple[str, str]], optional
             List of images to include in the PDF, by default None.
             Format: [(path, content), ...]
                 The content can be a base64 encoded string, file path or URL.
-
         compiler : str, optional
             Compiler to use, by default 'lualatex'
 
@@ -172,7 +166,7 @@ class AsyncLatexCompiler(LatexCompiler):
 
         Raises
         ------
-        Exception
+        CompilationError
             If compilation fails.
         """
         main_doc = {
