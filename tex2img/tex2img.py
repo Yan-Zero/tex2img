@@ -44,22 +44,18 @@ class Latex2PNG(LatexCompiler):
     """
 
     def compile(self, latex_code, images: list[tuple[str, str]] | None = None, compiler='lualatex'):
+        png_results = []
         pdf = super().compile(latex_code, images, compiler)
         with BytesIO(pdf) as pdf_file:
-            with BytesIO() as png_bytes:
-                png_image = pdf2image.convert_from_bytes(pdf_file.read())[0]
-                png_image.save(png_bytes, 'PNG')
-                return png_bytes.getvalue()
+            for i in pdf2image.convert_from_bytes(pdf_file.read()):
+                with BytesIO() as png_bytes:
+                    i.save(png_bytes, 'PNG')
+                    png_results.append(png_bytes.getvalue())
+        return png_results
 
 
 class AsyncLatex2PNG(AsyncLatexCompiler):
     """ Class to compile LaTeX code to PNG file asynchronously.
-    Only first page of the PDF file is converted to PNG.
-
-    Attributes
-    ----------
-    API_URL : str
-        URL of the LaTeX compiler API.
 
     Methods
     -------
@@ -75,9 +71,11 @@ class AsyncLatex2PNG(AsyncLatexCompiler):
     async def acompile(self, latex_code,
                        images: list[tuple[str, str]] | None = None,
                        compiler='lualatex'):
+        png_results = []
         pdf = await super().acompile(latex_code, images, compiler)
         with BytesIO(pdf) as pdf_file:
-            with BytesIO() as png_bytes:
-                png_image = pdf2image.convert_from_bytes(pdf_file.read())[0]
-                png_image.save(png_bytes, 'PNG')
-                return png_bytes.getvalue()
+            for i in pdf2image.convert_from_bytes(pdf_file.read()):
+                with BytesIO() as png_bytes:
+                    i.save(png_bytes, 'PNG')
+                    png_results.append(png_bytes.getvalue())
+        return png_results

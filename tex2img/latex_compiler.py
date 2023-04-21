@@ -35,24 +35,29 @@ from .exceptions import CompilationError
 
 class LatexCompiler:
     '''Class to compile LaTeX code to PDF file.
-
-    Attributes
-    ----------
-    API_URL : str
-        URL of the LaTeX compiler API.
-
     Methods
     -------
     compile(latex_code, images=None, compiler='lualatex')
         Compile LaTeX code to PDF file.
     '''
 
-    API_URL = 'https://latex.ytotech.com/builds/sync'
+    api_url: str
 
     session: requests.Session
 
-    def __init__(self):
+    def __init__(self, api_url: str):
+        """ Initialize the class.
+
+        Parameters
+        ----------
+        api_url : str
+            URL of the LaTeX compiler API.
+            Recommended: https://latex.ytotech.com/builds/sync
+        """
         self.session = requests.Session()
+        if not api_url:
+            raise ValueError("API_URL cannot be empty.")
+        self.api_url = api_url
 
     def compile(self, latex_code,
                 images: Optional[list[tuple[str, str]]] = None,
@@ -108,7 +113,7 @@ class LatexCompiler:
             'compiler': compiler,
             'resources': resources
         }
-        response = self.session.post(self.API_URL, data=json.dumps(payload), headers={
+        response = self.session.post(self.api_url, data=json.dumps(payload), headers={
             'Content-Type': 'application/json'}, timeout=60)
         if response.status_code in [200, 201]:
             pdf_data = response.content
@@ -133,11 +138,11 @@ class AsyncLatexCompiler(LatexCompiler):
         Compile LaTeX code to PDF file.
     """
 
-    aio_session: aiohttp.ClientSession
+    session: aiohttp.ClientSession
 
-    def __init__(self):
-        super().__init__()
-        self.aio_session = aiohttp.ClientSession()
+    def __init__(self, api_url: str):
+        super().__init__(api_url=api_url)
+        self.session = aiohttp.ClientSession()
 
     def compile(self, latex_code, images: list[tuple[str, str]] | None = None, compiler='lualatex'):
         raise NotImplementedError("Use acompile instead.")
@@ -196,7 +201,7 @@ class AsyncLatexCompiler(LatexCompiler):
             'compiler': compiler,
             'resources': resources
         }
-        async with self.aio_session.post(self.API_URL, data=json.dumps(payload), headers={
+        async with self.session.post(self.api_url, data=json.dumps(payload), headers={
                 'Content-Type': 'application/json'}, timeout=60) as response:
             if response.status in [200, 201]:
                 pdf_data = await response.read()
@@ -210,4 +215,4 @@ class AsyncLatexCompiler(LatexCompiler):
         return self
 
     async def __aexit__(self, exc_type, exc, tb):
-        await self.aio_session.close()
+        await self.session.close()

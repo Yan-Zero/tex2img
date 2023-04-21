@@ -2,21 +2,23 @@
 
 `tex2img` is a Python package that provides tools for rendering LaTeX documents as PDF files or PNG images using the `https://latex.ytotech.com/` API.
 
+Here is the project of [latex-on-http](https://github.com/YtoTech/latex-on-http)
+
 ## Installation
 
-You can install `tex2img` using `pip`:
+You can install `tex2img` using pip:
 
 ```bash
 pip install git+https://github.com/Yan-Zero/tex2img.git@main
 ```
 
-But you need to install poppler, in Debian/Ubuntu:
+But you need to install `poppler`, in Debian/Ubuntu:
 
 ```bash
 sudo apt install poppler-utils
 ```
 
-Others OS, please refer to [pdf2image](https://github.com/Belval/pdf2image#how-to-install)
+Other OS, please refer to [pdf2image](https://github.com/Belval/pdf2image#how-to-install)
 
 ## Usage
 
@@ -27,7 +29,7 @@ To render LaTeX documents as PDF files, you can use the `LatexCompiler` class:
 ```python
 from tex2img import LatexCompiler
 
-renderer = LatexCompiler()
+renderer = LatexCompiler(api_url='https://latex.ytotech.com/builds/sync')
 tex = r'''
 \documentclass{article}
 \usepackage{amsmath}
@@ -52,7 +54,7 @@ To render LaTeX documents as PNG images, you can use the `LatexRenderer` class:
 ```python
 from tex2img import Latex2PNG
 
-renderer = Latex2PNG()
+renderer = Latex2PNG(api_url='https://latex.ytotech.com/builds/sync')
 tex = r'''
 \documentclass{article}
 \usepackage{amsmath}
@@ -77,7 +79,7 @@ please feel free to submit an issue or a pull request on GitHub at [tex2img](htt
 
 ## License
 
-`tex2img` is licensed under the Apache 2 License. See [LICENSE](LICENSE) for more information.
+`tex2img` is licensed under the Apache-2.0 license. See [LICENSE](LICENSE) for more information.
 
 ## Acknowledgements
 
