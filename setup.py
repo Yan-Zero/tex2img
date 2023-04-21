@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="tex2img",
-    version="0.1.0",
+    version="0.1.2",
     author="Yan",
     author_email="1964649083@qq.com",
     description="A package for rendering LaTeX documents as PDF files or PNG images.",

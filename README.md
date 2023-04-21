@@ -1,6 +1,6 @@
 # tex2img
 
-`tex2img` is a Python package that provides tools for rendering LaTeX documents as PDF files or PNG images using the `https://latex.ytotech.com/` API.
+`tex2img` is a Python package that provides tools for rendering LaTeX documents as PDF files or PNG images.
 
 Here is the project of [latex-on-http](https://github.com/YtoTech/latex-on-http)
 
