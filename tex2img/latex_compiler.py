@@ -43,7 +43,7 @@ class LatexCompiler:
 
     Methods
     -------
-    compile(latex_code, images=None, compiler='pdflatex')
+    compile(latex_code, images=None, compiler='lualatex')
         Compile LaTeX code to PDF file.
     '''
 
@@ -56,7 +56,7 @@ class LatexCompiler:
 
     def compile(self, latex_code,
                 images: Optional[list[tuple[str, str]]] = None,
-                compiler='pdflatex'):
+                compiler='lualatex'):
         '''Compile LaTeX code to PDF file.
 
         Parameters
@@ -70,7 +70,7 @@ class LatexCompiler:
                 The content can be a base64 encoded string, file path or URL. 
 
         compiler : str, optional
-            Compiler to use, by default 'pdflatex'
+            Compiler to use, by default 'lualatex'
 
         Returns
         -------
@@ -129,7 +129,7 @@ class AsyncLatexCompiler(LatexCompiler):
 
     Methods
     -------
-    acompile(latex_code, images=None, compiler='pdflatex')
+    acompile(latex_code, images=None, compiler='lualatex')
         Compile LaTeX code to PDF file.
     """
 
@@ -139,12 +139,12 @@ class AsyncLatexCompiler(LatexCompiler):
         super().__init__()
         self.aio_session = aiohttp.ClientSession()
 
-    def compile(self, latex_code, images: list[tuple[str, str]] | None = None, compiler='pdflatex'):
+    def compile(self, latex_code, images: list[tuple[str, str]] | None = None, compiler='lualatex'):
         raise NotImplementedError("Use acompile instead.")
 
     async def acompile(self, latex_code,
                        images: Optional[list[tuple[str, str]]] = None,
-                       compiler='pdflatex'):
+                       compiler='lualatex'):
         """Asynchronous version of compile method.
 
         Parameters
@@ -158,7 +158,7 @@ class AsyncLatexCompiler(LatexCompiler):
                 The content can be a base64 encoded string, file path or URL.
 
         compiler : str, optional
-            Compiler to use, by default 'pdflatex'
+            Compiler to use, by default 'lualatex'
 
         Returns
         -------

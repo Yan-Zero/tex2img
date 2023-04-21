@@ -10,6 +10,14 @@ You can install `tex2img` using `pip`:
 pip install git+https://github.com/Yan-Zero/tex2img.git@main
 ```
 
+But you need to install poppler, in Debian/Ubuntu:
+
+```bash
+sudo apt install poppler-utils
+```
+
+Others OS, please refer to [pdf2image](https://github.com/Belval/pdf2image#how-to-install)
+
 ## Usage
 
 ### Render LaTeX documents as PDF files
@@ -70,3 +78,9 @@ please feel free to submit an issue or a pull request on GitHub at [tex2img](htt
 ## License
 
 `tex2img` is licensed under the Apache 2 License. See [LICENSE](LICENSE) for more information.
+
+## Acknowledgements
+
+We would like to thank the following individuals and organizations for their contributions to this project:
+
+- [YtoTech](https://github.com/YtoTech) for creating and sharing the `latex-on-http` project.

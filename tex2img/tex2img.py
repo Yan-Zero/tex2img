@@ -39,11 +39,11 @@ class Latex2PNG(LatexCompiler):
 
     Methods
     -------
-    compile(latex_code, images=None, compiler='pdflatex')
+    compile(latex_code, images=None, compiler='lualatex')
         Compile LaTeX code to PNG file.
     """
 
-    def compile(self, latex_code, images: list[tuple[str, str]] | None = None, compiler='pdflatex'):
+    def compile(self, latex_code, images: list[tuple[str, str]] | None = None, compiler='lualatex'):
         pdf = super().compile(latex_code, images, compiler)
         with BytesIO(pdf) as pdf_file:
             with BytesIO() as png_bytes:
@@ -63,18 +63,18 @@ class AsyncLatex2PNG(AsyncLatexCompiler):
 
     Methods
     -------
-    acompile(latex_code, images=None, compiler='pdflatex')
+    acompile(latex_code, images=None, compiler='lualatex')
         Compile LaTeX code to PNG file.
     """
 
     def compile(self, latex_code,
                 images: list[tuple[str, str]] | None = None,
-                compiler='pdflatex'):
+                compiler='lualatex'):
         raise NotImplementedError("Use acompile instead.")
 
     async def acompile(self, latex_code,
                        images: list[tuple[str, str]] | None = None,
-                       compiler='pdflatex'):
+                       compiler='lualatex'):
         pdf = await super().acompile(latex_code, images, compiler)
         with BytesIO(pdf) as pdf_file:
             with BytesIO() as png_bytes:
