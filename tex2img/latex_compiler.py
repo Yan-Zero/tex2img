@@ -34,19 +34,19 @@ from .exceptions import CompilationError
 
 
 class LatexCompiler:
-    '''Class to compile LaTeX code to PDF file.
+    """Class to compile LaTeX code to PDF file.
     Methods
     -------
-    compile(latex_code, images=None, compiler='lualatex')
+    compile(latex_code, images=None, compiler='xelatex')
         Compile LaTeX code to PDF file.
-    '''
+    """
 
     api_url: str
 
     session: requests.Session
 
     def __init__(self, api_url: str = ""):
-        """ Initialize the class.
+        """Initialize the class.
 
         Parameters
         ----------
@@ -56,15 +56,18 @@ class LatexCompiler:
         """
         self.session = requests.Session()
         if not api_url:
-            api_url = os.getenv('LATEX_COMPILER_API_URL', '')
+            api_url = os.getenv("LATEX_COMPILER_API_URL", "")
         if not api_url:
             raise ValueError("API_URL cannot be empty.")
         self.api_url = api_url
 
-    def compile(self, latex_code,
-                images: Optional[list[tuple[str, str]]] = None,
-                compiler='lualatex'):
-        '''Compile LaTeX code to PDF file.
+    def compile(
+        self,
+        latex_code,
+        images: Optional[list[tuple[str, str]]] = None,
+        compiler="xelatex",
+    ):
+        """Compile LaTeX code to PDF file.
 
         Parameters
         ----------
@@ -73,9 +76,9 @@ class LatexCompiler:
         images : list[tuple[str, str]], optional
             List of images to include in the PDF, by default None.
             Format: [(path, content), ...]
-                The content can be a base64 encoded string, file path or URL. 
+                The content can be a base64 encoded string, file path or URL.
         compiler : str, optional
-            Compiler to use, by default 'lualatex'
+            Compiler to use, by default 'xelatex'
 
         Returns
         -------
@@ -86,42 +89,33 @@ class LatexCompiler:
         ------
         CompilationError
             If compilation fails.
-        '''
-        main_doc = {
-            'main': True,
-            'content': latex_code
-        }
+        """
+        main_doc = {"main": True, "content": latex_code}
 
         resources = [main_doc]
         if images:
             for path, content in images:
-                if content.startswith('http'):
-                    resources.append({
-                        'path': path,
-                        'url': content
-                    })
+                if content.startswith("http"):
+                    resources.append({"path": path, "url": content})
                     continue
                 if os.path.isfile(content):
-                    with open(content, 'rb') as f:
-                        content = base64.b64encode(f.read()).decode('utf-8')
-                resources.append({
-                    'path': path,
-                    'content': content
-                })
+                    with open(content, "rb") as f:
+                        content = base64.b64encode(f.read()).decode("utf-8")
+                resources.append({"path": path, "content": content})
 
-        payload = {
-            'compiler': compiler,
-            'resources': resources
-        }
-        response = self.session.post(self.api_url, data=json.dumps(payload), headers={
-            'Content-Type': 'application/json'}, timeout=60)
+        payload = {"compiler": compiler, "resources": resources}
+        response = self.session.post(
+            self.api_url,
+            data=json.dumps(payload),
+            headers={"Content-Type": "application/json"},
+            timeout=60,
+        )
         if response.status_code in [200, 201]:
             pdf_data = response.content
             return pdf_data
         else:
-            error_logs = response.json()['logs']
-            raise CompilationError(
-                f"Compilation failed with error logs: {error_logs}")
+            error_logs = response.json()["logs"]
+            raise CompilationError(f"Compilation failed with error logs: {error_logs}")
 
 
 class AsyncLatexCompiler(LatexCompiler):
@@ -129,23 +123,28 @@ class AsyncLatexCompiler(LatexCompiler):
 
     Methods
     -------
-    acompile(latex_code, images=None, compiler='lualatex')
+    acompile(latex_code, images=None, compiler='xelatex')
         Compile LaTeX code to PDF file.
     """
 
-    session: aiohttp.ClientSession
-
     def __init__(self, api_url: str = ""):
         super().__init__(api_url=api_url)
-        self.session = aiohttp.ClientSession()
 
-    def compile(self, latex_code, images: list[tuple[str, str]] | None = None, compiler='lualatex'):
-        """ DON'T USE THIS METHOD. USE `acompile` INSTEAD. """
+    def compile(
+        self,
+        latex_code,
+        images: list[tuple[str, str]] | None = None,
+        compiler="xelatex",
+    ):
+        """DON'T USE THIS METHOD. USE `acompile` INSTEAD."""
         raise NotImplementedError("Use acompile instead.")
 
-    async def acompile(self, latex_code,
-                       images: Optional[list[tuple[str, str]]] = None,
-                       compiler='lualatex'):
+    async def acompile(
+        self,
+        latex_code,
+        images: Optional[list[tuple[str, str]]] = None,
+        compiler="xelatex",
+    ):
         """Asynchronous version of compile method.
 
         Parameters
@@ -157,7 +156,7 @@ class AsyncLatexCompiler(LatexCompiler):
             Format: [(path, content), ...]
                 The content can be a base64 encoded string, file path or URL.
         compiler : str, optional
-            Compiler to use, by default 'lualatex'
+            Compiler to use, by default 'xelatex'
 
         Returns
         -------
@@ -169,44 +168,32 @@ class AsyncLatexCompiler(LatexCompiler):
         CompilationError
             If compilation fails.
         """
-        main_doc = {
-            'main': True,
-            'content': latex_code
-        }
+        main_doc = {"main": True, "content": latex_code}
 
         resources = [main_doc]
         if images:
             for path, content in images:
-                if content.startswith('http'):
-                    resources.append({
-                        'path': path,
-                        'url': content
-                    })
+                if content.startswith("http"):
+                    resources.append({"path": path, "url": content})
                     continue
                 if os.path.isfile(content):
-                    async with aiofiles.open(content, 'rb') as f:
-                        content = base64.b64encode(await f.read()).decode('utf-8')
-                resources.append({
-                    'path': path,
-                    'content': content
-                })
+                    async with aiofiles.open(content, "rb") as f:
+                        content = base64.b64encode(await f.read()).decode("utf-8")
+                resources.append({"path": path, "content": content})
 
-        payload = {
-            'compiler': compiler,
-            'resources': resources
-        }
-        async with self.session.post(self.api_url, data=json.dumps(payload), headers={
-                'Content-Type': 'application/json'}, timeout=60) as response:
-            if response.status in [200, 201]:
-                pdf_data = await response.read()
-                return pdf_data
-            else:
-                error_logs = (await response.json())['logs']
-                raise CompilationError(
-                    f"Compilation failed with error logs: {error_logs}")
-
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, exc_type, exc, tb):
-        await self.session.close()
+        payload = {"compiler": compiler, "resources": resources}
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                self.api_url,
+                data=json.dumps(payload),
+                headers={"Content-Type": "application/json"},
+                timeout=60,
+            ) as response:
+                if response.status in [200, 201]:
+                    pdf_data = await response.read()
+                    return pdf_data
+                else:
+                    error_logs = (await response.json())["logs"]
+                    raise CompilationError(
+                        f"Compilation failed with error logs: {error_logs}"
+                    )
